@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id           String         @id @default(uuid())
+  title        String
+  author       Author         @relation(fields: [authorId], references: [id])
+  authorId     String
+  description  String?
+  genres       BookGenre[]
+  wishlistItem WishlistItem[]
+  releasedAt   DateTime
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Author {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  book        Book[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  name         String?
+  wishlistItem WishlistItem[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Genre {
+  name        String      @id
+  description String?
+  books       BookGenre[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model BookGenre {
+  id        String   @id @default(uuid())
+  book      Book     @relation(fields: [bookId], references: [id])
+  bookId    String
+  genre     Genre    @relation(fields: [genreName], references: [name])
+  genreName String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum WishlistStatus {
+  TBR
+  READING
+  READ
+}
+
+model WishlistItem {
+  id        String         @id @default(uuid())
+  book      Book           @relation(fields: [bookId], references: [id])
+  bookId    String
+  user      User           @relation(fields: [userId], references: [id])
+  userId    String
+  status    WishlistStatus
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
