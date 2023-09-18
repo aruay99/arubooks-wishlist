@@ -8,7 +8,7 @@ export class CreateBookDto {
   title: string;
 
   @IsString()
-  @ApiProperty({ description: 'The description of the book', example: 'The Hobbit is a fantasy book' })
+  @ApiProperty({ description: 'ID of the author of the book', example: '753dfa6d-9b50-4c7d-bfc8-e1835308b10c' }) 
   authorId: string;
 
   @IsDate()
