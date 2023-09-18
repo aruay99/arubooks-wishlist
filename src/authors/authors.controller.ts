@@ -10,7 +10,13 @@ import {
 import { AuthorsService } from './authors.service';
 import { CreateAuthorDto } from './dto/create-author.dto';
 import { UpdateAuthorDto } from './dto/update-author.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiAcceptedResponse,
+  ApiNotFoundResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AuthorEntity } from './entities/author.entity';
 
 @ApiTags('authors')
 @Controller('authors')
@@ -36,14 +42,25 @@ export class AuthorsController {
   }
 
   @ApiOperation({ summary: 'Update an author by id' })
+  @ApiAcceptedResponse({
+    description: 'The author has been successfully updated.',
+    type: AuthorEntity,
+  })
+  @ApiNotFoundResponse({
+    description: 'The author with the specified id was not found.',
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAuthorDto: UpdateAuthorDto) {
-    return this.authorsService.update(+id, updateAuthorDto);
+    return this.authorsService.update(id, updateAuthorDto);
   }
 
   @ApiOperation({ summary: 'Delete an author by id' })
+  @ApiAcceptedResponse({
+    description: 'The author has been successfully deleted.',
+    type: AuthorEntity,
+  })
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.authorsService.remove(+id);
+    return this.authorsService.remove(id);
   }
 }
