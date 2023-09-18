@@ -16,7 +16,7 @@ import {
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthorEntity } from './entities/author.entity';
+import { AuthorEntity } from './author.entity';
 
 @ApiTags('authors')
 @Controller('authors')

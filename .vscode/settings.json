@@ -1,5 +1,6 @@
 {
   "conventionalCommits.scopes": [
-    "openapi"
+    "openapi",
+    "add book entity"
   ]
 }
