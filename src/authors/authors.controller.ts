@@ -7,15 +7,15 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { AuthorsService } from './authors.service';
-import { CreateAuthorDto } from './dto/create-author.dto';
-import { UpdateAuthorDto } from './dto/update-author.dto';
 import {
   ApiAcceptedResponse,
   ApiNotFoundResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
+import { AuthorsService } from './authors.service';
+import { CreateAuthorDto } from './dto/create-author.dto';
+import { UpdateAuthorDto } from './dto/update-author.dto';
 import { AuthorEntity } from './author.entity';
 
 @ApiTags('authors')
@@ -25,19 +25,19 @@ export class AuthorsController {
 
   @ApiOperation({ summary: 'Create an author' })
   @Post()
-  create(@Body() createAuthorDto: CreateAuthorDto) {
+  async create(@Body() createAuthorDto: CreateAuthorDto) {
     return this.authorsService.create(createAuthorDto);
   }
 
   @ApiOperation({ summary: 'Read all authors' })
   @Get()
-  findAll() {
+  async findAll() {
     return this.authorsService.findAll();
   }
 
   @ApiOperation({ summary: 'Read an author by id' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     return this.authorsService.findOne(id);
   }
 
@@ -50,7 +50,10 @@ export class AuthorsController {
     description: 'The author with the specified id was not found.',
   })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthorDto: UpdateAuthorDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateAuthorDto: UpdateAuthorDto,
+  ) {
     return this.authorsService.update(id, updateAuthorDto);
   }
 
@@ -60,7 +63,7 @@ export class AuthorsController {
     type: AuthorEntity,
   })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.authorsService.remove(id);
   }
 }

@@ -1,12 +1,15 @@
-import { NestFactory } from '@nestjs/core';
+import * as fs from 'node:fs';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
-  NestFastifyApplication,
+  type NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as fs from 'fs';
+import { AppModule } from './app.module';
+import { PrismaClientExceptionFilter } from './shared/filters/prisma-client-exception/prisma-client-exception.filter';
+import { HttpExceptionFilter } from './shared/filters/http-exception/http-exception.filter';
+import { AllExceptionsFilter } from './shared/filters/all-exceptions/all-exceptions.filter';
 
 async function bootstrap() {
   // Bootstrap NestJS and Fastify
@@ -29,7 +32,15 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
 
+  // Bootstrap Error Handling
+  const httpAdapterHost = app.get(HttpAdapterHost);
+  app.useGlobalFilters(
+    new AllExceptionsFilter(httpAdapterHost),
+    new HttpExceptionFilter(),
+    new PrismaClientExceptionFilter(),
+  );
+
   await app.listen(3000, '0.0.0.0');
 }
 
-bootstrap();
+bootstrap().catch((err) => console.error(err));

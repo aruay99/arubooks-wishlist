@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'nestjs-prisma';
-import { Book, Prisma } from '@prisma/client';
-import { CreateBookDto } from './dto/create-book.dto';
+import { type Book, type Prisma } from '@prisma/client';
 import { GenresService } from '../genres/genres.service';
+import { type CreateBookDto } from './dto/create-book.dto';
 
 @Injectable()
 export class BooksService {
   constructor(
-    private prisma: PrismaService,
-    private genres: GenresService,
+    private readonly prisma: PrismaService,
+    private readonly genres: GenresService,
   ) {}
 
   async create(dto: CreateBookDto): Promise<Book> {
@@ -33,7 +33,13 @@ export class BooksService {
     });
   }
 
-  findAll() {
+  async findAll() {
     return this.prisma.book.findMany();
+  }
+
+  async findOne(id: string) {
+    return this.prisma.book.findUniqueOrThrow({
+      where: { id },
+    });
   }
 }
